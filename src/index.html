@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css">
+    <style>
+     body {
+    text-align: center;
+     margin: 0; 
+     padding-bottom: 3rem; 
+     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+    }
+    .conatiner{
+        border-radius: 2rem;
+        border: black;
+        line-height: 10px;
+    }
+
+#form {
+     background: rgba(0, 0, 0, 0.15);
+      padding: 0.25rem; position: fixed; 
+      bottom: 10px; 
+      left: 0; 
+      right: 0; 
+      display: flex; 
+      height: 3rem; 
+      box-sizing: border-box;
+       backdrop-filter: blur(10px); 
+    }
+#msginput { 
+    border: 1px black; 
+    padding: 0 1rem; 
+    flex-grow: 1;
+     border-radius: 2rem;
+      margin: 0.25rem; 
+    }
+#msginput:focus 
+{ 
+    outline: none;
+ }
+#form > button 
+{ 
+    
+    background: green; 
+    border: none; 
+    padding: 0 1rem; 
+    margin: 0.25rem; 
+    border-radius: 3px; 
+    outline: none; 
+    color: #fff; 
+}
+    </style>
+</head>
+<body>
+    <div class="main">
+    <h1>welcome to chat world...</h1>
+ <div class="conatiner">
+  
+
+   </div>
+   <div class="sendbox">
+  <form id="form" action="">
+      <input id="msginput" autocomplete="off"  placeholder="Entee your message"/>
+      <button type="submit" id="submit">Send</button>
+    </form>
+</div>
+</div>
+
+     <script src=" http://localhost:8002/socket.io/socket.io.js"></script>
+    <script>
+        const socket=io()
+          const name=prompt('enter your name')
+          socket.emit('newuser',name)
+
+       
+      var form = document.getElementById('form');
+      var input = document.getElementById('msginput');
+      var messagecontainer = document.querySelector('.conatiner');
+
+      const appends=(msg,position)=>{
+        const msgElmt = document.createElement('div');
+    
+        msgElmt.innerText = msg;
+        msgElmt.classList.add('msgbox');
+      
+        messagecontainer.append(msgElmt);
+      
+
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+             const message=input.value
+            
+          socket.emit('send', input.value);
+          input.value = '';
+        }); 
+
+
+        socket.on('userjoin',name=>{
+            appends(`${name} joined the chat`)
+        })
+        socket.on('recieve',data=>{
+            appends(`${data.name}:${data.message}`)
+        })
+        socket.on('left',data=>{
+            appends(`${name} left the chat`)
+        })
+        
+      
+   
+
+        
+    </script>
+</body>
+</html>
